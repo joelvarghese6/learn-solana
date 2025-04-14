@@ -26,11 +26,11 @@ export function CrudappCreate() {
   }
 
   return (
-    <div>
+    <div className='flex flex-col space-y-4 items-center justify-center'>
       <input
         type="text"
-        placeholder='title'
-        value="title"
+        placeholder="title"
+        value={title}
         onChange={(e) => setTitle(e.target.value)}
         className='input input-bordered w-full max-w-xs'
       />
