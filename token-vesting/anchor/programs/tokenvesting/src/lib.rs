@@ -14,9 +14,25 @@ pub mod tokenvesting {
 
     use super::*;
 
-    pub fn create_vesting_account(_ctx: Context<CreateVestingAccount>) -> Result<()> {
+    pub fn create_vesting_account(ctx: Context<CreateVestingAccount>, company_name: String) -> Result<()> {
+      *ctx.accounts.vesting_account = VestingAccount {
+        owner: ctx.accounts.signer.key(),
+        mint: ctx.accounts.mint.key(),
+        treasury_token_account: ctx.accounts.treasury_token_account.key(),
+        company_name,
+        treasury_bump: ctx.bumps.treasury_token_account,
+        bump: ctx.bumps.vesting_account,
+      };
+
+
       Ok(())
     }
+
+    pub fn create_employee_account(_ctx: Context<CreateEmployeeAccount>) -> Result<()> {
+
+      Ok(())
+    }
+
 }
 
 #[derive(Accounts)]
@@ -51,6 +67,15 @@ pub struct CreateVestingAccount<'info> {
   pub token_program: Interface<'info, TokenInterface>
 }
 
+#[derive(Account)]
+pub struct CreateEmployeeAccount<'info> {
+
+  #[account(mut)]
+  pub owner: Signer<'info>,
+
+  pub benficiary: SystemAccount<'ifno>
+}
+
 #[account]
 #[derive(InitSpace)]
 pub struct VestingAccount {
@@ -61,5 +86,17 @@ pub struct VestingAccount {
   pub company_name: String,
   pub treasury_bump: u8,
   pub bump: u8,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct EmployeeAccount {
+  pub benficiary: Pubkey,
+  pub start_time: i64,
+  pub end_time: i64,
+  pub cliff_time: i64,
+  pub vesting_account: Pubkey,
+  pub total_amount: u64,
+  pub total_withdrawn: u64,
 }
 
